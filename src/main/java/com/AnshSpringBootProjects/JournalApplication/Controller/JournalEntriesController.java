@@ -16,8 +16,6 @@ public class JournalEntriesController {
     @Autowired
     private JournalEntriesService jes;
 
-    private Long idCounter = 1L;
-
     @GetMapping
     public List<JournalEntries> getAll() {
         return jes.getAll();
@@ -36,9 +34,9 @@ public class JournalEntriesController {
     }
 
     @DeleteMapping("/id/{myId}")
-    public JournalEntries deleteEntryById(@PathVariable ObjectId myId) {
+    public String deleteEntryById(@PathVariable ObjectId myId) {
         jes.deletionById(myId);
-        return jes.findById(myId).orElse(null);
+        return "Entry Deleted !";
     }
 
     @PutMapping("/id/{id}")
@@ -49,7 +47,7 @@ public class JournalEntriesController {
             old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
         }
 
-        jes.saveEntries(newEntry);
+        jes.saveEntries(old);
         return jes.findById(id).orElse(null);
     }
 
