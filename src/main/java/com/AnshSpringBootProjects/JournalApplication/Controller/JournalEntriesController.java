@@ -1,47 +1,56 @@
 package com.AnshSpringBootProjects.JournalApplication.Controller;
 
 import com.AnshSpringBootProjects.JournalApplication.Entity.JournalEntries;
-import com.AnshSpringBootProjects.JournalApplication.JournalApplication;
+import com.AnshSpringBootProjects.JournalApplication.Services.JournalEntriesService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/journal")
 public class JournalEntriesController {
 
-    private Map<Long, JournalEntries> je = new HashMap<>();
+    @Autowired
+    private JournalEntriesService jes;
 
     private Long idCounter = 1L;
 
     @GetMapping
     public List<JournalEntries> getAll() {
-        return new ArrayList<>(je.values());
+        return jes.getAll();
     }
 
     @PostMapping
     public String createEntry(@RequestBody JournalEntries newEntry) {
-        newEntry.setId(idCounter++);
-        je.put(newEntry.getId(), newEntry);
-        return "New Entry Created with ID: " + newEntry.getId();
+        newEntry.setDate(LocalDateTime.now());
+        jes.saveEntries(newEntry);
+        return "New Entry Saved !";
     }
 
     @GetMapping("/id/{myId}")
-    public JournalEntries getEntryById(@PathVariable Long myId) {
-        return je.get(myId);
+    public JournalEntries getEntryById(@PathVariable ObjectId myId) {
+        return jes.findById(myId).orElse(null);
     }
 
     @DeleteMapping("/id/{myId}")
-    public JournalEntries deleteEntryById(@PathVariable Long myId) {
-        return je.remove(myId);
+    public JournalEntries deleteEntryById(@PathVariable ObjectId myId) {
+        jes.deletionById(myId);
+        return jes.findById(myId).orElse(null);
     }
 
-    @PutMapping
-    public JournalEntries updateEntryById(@RequestBody JournalEntries newEntry) {
-        return je.put(newEntry.getId(), newEntry);
+    @PutMapping("/id/{id}")
+    public JournalEntries updateEntryById(@PathVariable ObjectId id, @RequestBody JournalEntries newEntry) {
+        JournalEntries old = jes.findById(id).orElse(null);
+        if(old != null) {
+            old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : old.getTitle());
+            old.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : old.getContent());
+        }
+
+        jes.saveEntries(newEntry);
+        return jes.findById(id).orElse(null);
     }
 
 }
