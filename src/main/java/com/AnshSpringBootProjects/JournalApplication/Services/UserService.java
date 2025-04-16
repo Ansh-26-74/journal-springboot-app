@@ -25,4 +25,8 @@ public class UserService {
         return ur.findByUsername(username);
     }
 
+    public void deleteAllEntries(){
+        ur.deleteAll();
+    }
+
 }

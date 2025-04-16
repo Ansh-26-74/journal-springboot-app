@@ -47,4 +47,10 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteAllUsers() {
+        us.deleteAllEntries();
+        return new ResponseEntity<>("All Users Deleted", HttpStatus.OK);
+    }
+
 }
