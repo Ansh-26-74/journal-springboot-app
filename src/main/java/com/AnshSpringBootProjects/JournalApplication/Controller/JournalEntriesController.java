@@ -71,4 +71,9 @@ public class JournalEntriesController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    public class UserController {
+
+
+
+    }
 }

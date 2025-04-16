@@ -1,7 +1,7 @@
 package com.AnshSpringBootProjects.JournalApplication.Services;
 
 import com.AnshSpringBootProjects.JournalApplication.Entity.JournalEntries;
-import com.AnshSpringBootProjects.JournalApplication.Repositories.JournalEntriesRepositories;
+import com.AnshSpringBootProjects.JournalApplication.Repositories.JournalEntriesRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public class JournalEntriesService {
 
     @Autowired
-    private JournalEntriesRepositories jer;
+    private JournalEntriesRepository jer;
 
     public void saveEntries(JournalEntries journalEntries) {
         jer.save(journalEntries);
