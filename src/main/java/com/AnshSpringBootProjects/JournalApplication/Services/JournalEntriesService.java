@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,12 +23,17 @@ public class JournalEntriesService {
     @Autowired
     private UserService us;
 
-    public void saveEntries(JournalEntries newEntry, String username) {
-        newEntry.setDate(LocalDateTime.now());
+    public void saveEntries(JournalEntries newEntry, String username) throws Exception {
         User user = us.findByUsername(username);
-        JournalEntries saved = jer.save(newEntry);
-        user.getJournalEntries().add(saved);
-        us.createUser(user);
+        if (user == null) {
+            throw new Exception("User with username '" + username + "' not found.");
+        }
+        else {
+            newEntry.setDate(LocalDateTime.now());
+            JournalEntries saved = jer.save(newEntry);
+            user.getJournalEntries().add(saved);
+            us.createUser(user);
+        }
     }
 
     public void saveEntries(JournalEntries newEntry) {

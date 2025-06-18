@@ -40,6 +40,7 @@ public class JournalEntriesController {
             jes.saveEntries(newEntry, username);
             return new ResponseEntity<>("New Entry Saved !", HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
